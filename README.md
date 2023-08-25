@@ -16,4 +16,26 @@ in vscode, if you do a split view, you get preview.
     View/editor layout/single to undo split view, or just close the preview tab.
 ```
 
+## Steps So Far:
+
+0.  git config --global   etc
+
+0.  local:  create folder with files.   fpj.  (fjscomm got weird...)
+
+0.  github:  click new for new repository   fpj
+
+0.  local:
+```
+    cd fpj
+    git init
+    git add -A
+    git commit -m "first commmit"
+         now follow instructions from the github "new repo" step:
+         git remote add origin https-----/fpj.git
+         git branch -M main
+         git push -u origin main
+
+
+```
+    
 
