@@ -34,8 +34,13 @@ in vscode, if you do a split view, you get preview.
          git remote add origin https-----/fpj.git
          git branch -M main
          git push -u origin main
-
-
 ```
-    
+
+0. local:
+```
+I made edits, then commit -a -m "___", then git push.
+and the changes were on github.
+But I couldn't edit the file there. Don't know why not.
+```
+
 
