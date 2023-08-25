@@ -1,4 +1,9 @@
-## Project: fjscomm	   This is a dup, "fpj" because I got confused local level.
+## Project: fjscomm	   This is a dup, "fpj" because I got confused at mac local.
+
+I think the issue is MOL that renaming a folder tells git that there was a change;
+maybe the only way to delete the local repo is to really delete the folder.  
+Altho I thought removing the .git subfolder was enough...
+
 Flask-Javascript communication.  (My terminology.)
 
 I'm starting to learn "Python-API-endpoint" terminology.
