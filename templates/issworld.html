@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+
+<html lang="en">
+    <!--  fjscomm   issworld.html, merging world.html and simple.py     1/25/2023 -->
+<head>
+    <meta name="viewport" content="initial-scale=1, width=device-width">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <title>ISSWORLD</title>
+    <style>
+        th { text-align: left;
+        }
+    </style>
+    <script>
+
+    window.onload = function() {
+        var canvas = document.getElementById("canv");
+        var ctx = canvas.getContext("2d");
+        var img = document.getElementById("world");
+        ctx.drawImage(img, 0, 0);
+    };
+
+    wm = {
+        filename : "static/worldmap-1024x652.jpg",
+        imwid : 1024,
+        imht : 652,
+        maxlat : 90,
+        minlat : -65,
+        maxlon : 210,
+        minlon : -180,
+    }
+
+    const lats = [-60,-45,-30,-15,  0, 15, 30, 45, 60, 75,90];
+    const offs = [638,552,522,480,440,400,358,308,242.135, 0];
+
+    $(document).ready(function() {
+
+    $("#getjson").click(function(){    //  1/28/2023  PORTed to mc21a
+        $.getJSON("http://127.0.0.1:5000/issdata", function(x) {  // localhost for dev
+        // $.getJSON("http://192.168.1.10:5000/issdata", function(x) { // this change 
+            // was made on mc21a so I could reach it from the mac, 
+            // but the code on mcs21a, the IP should be (essentially) `hostname -I`
+            // and I guess accessing it from a browswer requires knowing the mc21a IP...
+            // or have I resolved that???
+            dd = JSON.stringify(x)
+            $("#msg").html("JSON.stringify(): " + dd)
+            dd = JSON.parse(dd)
+            $("#f1").html(dd['iss_position']['latitude'])
+            $("#f2").html(dd['iss_position']['longitude'])
+            updateLocation(dd)
+        });
+    })
+
+    var canvas = document.getElementById("canv");
+    var ctx = canvas.getContext("2d");
+    var img = document.getElementById("world");
+    ctx.drawImage(img, 0, 0);
+
+    function lon2x(lon) {
+        m = wm.imwid / (wm.maxlon - wm.minlon)
+        rv = m * (lon - wm.minlon)
+        return rv
+    }
+
+    function lat2y(y) {
+        if (y>=89) return 0;  // north pole
+        // start loop with 1 to handle south pole
+        for (let i=1; i<lats.length; i++) {
+            if (y<=lats[i]) { return offs[i]
+                - (lats[i]-y)*(offs[i]-offs[i-1])/(lats[i]-lats[i-1])
+            }
+        }
+        return -1;
+    }
+
+    $("#update").click(function() {
+        $("#getjson").click()
+    });
+
+    $("#mkdots").click(function() {
+        ctx.fillStyle = "#FF0000";
+        ctx.font = "10px Arial";
+        for ( lat=0; lat<90; lat+=15){
+            a = lon2x(0)
+            b = lat2y(lat)
+            ctx.fillRect(a,b, 0+lat,3); ctx.fillText(Math.round(lat),a+45,b);
+        }
+        ctx.fillStyle = "#0000FF";
+        ctx.font = "10px Arial";
+        for ( lon=-180; lon<=210; lon+=30){
+            a = lon2x(lon)
+            b = lat2y(0)
+            ctx.fillRect(a,b,3,20+lon); ctx.fillText(Math.round(lon),a+5,b);
+        }
+    });
+
+    function updateLocation(dd) {
+        ctx.fillStyle = "#FF0000";
+        ctx.font = "10px Arial";
+        a = lon2x(dd['iss_position']['longitude'])
+        b = lat2y(dd['iss_position']['latitude'])
+        ctx.fillRect(a, b, 3, 3);  // ctx.fillText(Math.round(b), a+45, b);
+        $("#timestamp").html(dd['timestamp'])
+        $("#nicedate").html(dd['nicedate'])
+        $("#latitude").html(dd['iss_position']['latitude'])
+        $("#longitude").html(dd['iss_position']['longitude'])
+        $("#temperature").html(dd['temperature'])
+        $("#utilization").html(dd['utilization'])
+        $("#hostname").html(dd['hostname'])
+    }
+    
+    });   // end ready
+
+    // === timer ... in version 2.0 this will be a class ...
+    //     ... with non-instantiated methods?  Sure.  Gimme a sec...
+    timerID = 0
+    timerCounter = 0;
+    timerStop = false
+    function startTimer() {
+        console.log("start timer.")
+        timerStop = false
+        timerCounter=0
+        timerID = setInterval(myTimer, 5000);
+        $("#loopsteps").html(timerCounter)
+    }
+    function stopTimer() {
+        clearInterval(timerID);
+        timerStop = true
+    }
+    function myTimer() {
+        console.log("timer " + timerCounter)
+        timerCounter = timerCounter + 1
+        if (timerCounter%10000==0 || timerStop) {
+            perfaStopTimer()
+            console.log("stop timer.")
+        } else {  
+            $("#loopsteps").html(timerCounter)
+            $("#getjson").click()
+        }
+    }
+    // === end timer 
+
+</script>
+</head>
+
+<body>
+<p> <font color=blue size=+2><B>fjscomm</B></font> Case study in Flask / Javascript communication.
+    <pre> issworld.py renders this HTML.  This page contains javascript/jquery 
+    that sends the /issdata requests back to issworld.py, parses the JSON response,
+    and does the inpage updates, including marking the ISS location on the canvas.</pre>
+
+<table xwidth="45%" border=0>
+    <TR><Th><img id="world" width="256" height="163" src="static/worldmap-1024x652.jpg"></Th>
+        <TD><table xwidth=100% border=0>
+            <TR>
+                <TH>Time</TH> <TD id="nicedate">{{ oj['nicedate'] }}</TD>
+                <TH>Server:</TH> <TD id="hostname">{{ oj['hostname'] }}</TD>
+            </TR>
+            <TR>
+                <TH>Latitude</TH> <TD id="latitude">{{ oj['iss_position']['latitude'] }}</TD>
+                <TH>Utilization:</TH> <TD id="utilization">{{ oj['utilization'] }}</TD>
+            </TR>
+            <TR>
+                <TH>Longitude</TH> <TD id="longitude">{{ oj['iss_position']['longitude'] }}</TD>
+                <TH>Temperature:</TH> <TD id="temperature">{{ oj['temperature'] }}</TD>
+            </TR>
+            <TR>
+                <TH>timestamp</TH> <TD id="timestamp">{{ oj['timestamp'] }}</TD>
+                <Td colspan=2 align="center"><button id="refresh">Refresh </button></Td>
+            </TR>
+            <TR><TD>&nbsp;</TD></TR>
+            <TR><Th><button id="mkdots">Calibrate Canvas</button></Th>                
+                <Th><button id="update">Update </button></Th>
+                <Th><button id="loopstart" onClick='startTimer()'>Start Loop </button></Th>
+                <Th><button id="loopstop"  onClick='stopTimer()' >Stop Loop </button></Th>
+                <Td>Steps: <span id="loopsteps" > Steps </span></Td>
+            </TR>
+            </table>
+        </TD>
+    </TR>
+</table>
+
+<canvas id="canv" width="1024" height="652" style="border:1px solid #d3d3d3;"> :( </canvas>
+<P><button id="getjson">Get ISS data as JSON</button>
+    ___ Lon: <span id="f1">(f1)</span> Lat:<span id="f2">(f2)</span> ___ 
+<BR>ISS Data: <span id="msg"> {{ oj }} </span>
+</P>
+    
+<P> fjscomm issworld.py and templates/issworld.html  build on simple.py and simple.html</P>
+    <pre>
+        > issworld.py gets ISS data, modifies it, passes it here. 
+        > /         redirects to /refresh
+        > /refresh  gets ISS data, renders template "issworld.html"
+        > /issdata  is invoked by #getjson.click(), uses getJSON to get ISS data. 
+            JSON.parse() creates a JS object. Puts values into DOM elements,
+            calls updateLocation90 with the values; puts a dot on the canvas.
+            This pattern is for updating birdiecam gauge from the server response.)
+            mkdots() is a calibration test (uses image-specific lats/offsets)
+    </pre>
+
+</body>
+</html>
