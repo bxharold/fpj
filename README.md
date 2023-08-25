@@ -1,4 +1,4 @@
-## Project: fjscomm	
+## Project: fjscomm	   This is a dup, "fpj" because I got confused local level.
 Flask-Javascript communication.  (My terminology.)
 
 I'm starting to learn "Python-API-endpoint" terminology.
