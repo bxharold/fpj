@@ -43,4 +43,5 @@ and the changes were on github.
 But I couldn't edit the file there. Don't know why not.
 ```
 
+2 things.  This time, I can edit the file.  The numbered list started at 0 again.
 
