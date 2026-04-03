@@ -38,6 +38,10 @@ in vscode, if you do a split view, you get preview.
 0. Editing a file::
 ```
 I made edits on the cloned local repo, then commit -a -m "___", then git push.
+git add 
+git add -A (git add --all) -- stage all changes in the working directory of a Git repo
+git commit -am "Updated README."
+
 The changes were on github.
 ```
 
@@ -46,5 +50,10 @@ The changes were on github.
     git add  myfile
     git commit -am "Your descriptive commit message"
     then git push.
+```
+
+0. Shortcut:
+```
+    git commit -a  -- streamlines the Git workflow by automatically staging and committing changes to tracked files in a single step.
 ```
 
