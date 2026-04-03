@@ -1,12 +1,11 @@
-## Project: fjscomm	   This is a dup, "fpj" because I got confused local level.
-Flask-Javascript communication.  (My terminology.)
+## Project: fjp 
+Flask-Javascript communication.  
 
-I'm starting to learn "Python-API-endpoint" terminology.
-I don't want to wrongly use jargon and sound like a noob.
+This is an exercise I worked on to learn "Python-API-endpoint" techniques and terminology.
 
-Creating RESTful APIs using Python and Flask
-Consuming (?) JSON APIs from within a Flask app.
-Return JSON to the browser, which updates an HTML canvas.
+0. Creating RESTful APIs using Python and Flask
+0. Consuming JSON APIs from within a Flask app.
+0. Returning JSON to the browser, which updates an HTML canvas.
 
 ### Useful pages:
 ```
@@ -36,12 +35,16 @@ in vscode, if you do a split view, you get preview.
          git push -u origin main
 ```
 
-0. local:
+0. Editing a file::
 ```
-I made edits, then commit -a -m "___", then git push.
-and the changes were on github.
-But I couldn't edit the file there. Don't know why not.
+I made edits on the cloned local repo, then commit -a -m "___", then git push.
+The changes were on github.
 ```
 
-2 things.  This time, I can edit the file.  The numbered list started at 0 again.
+0. Adding a file::
+```
+    git add  myfile
+    git commit -am "Your descriptive commit message"
+    then git push.
+```
 

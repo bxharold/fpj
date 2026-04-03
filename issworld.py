@@ -5,7 +5,7 @@
 
 from flask import Flask, jsonify, render_template, request, redirect, url_for
 import datetime, json, requests
-import os, subprocess, time, json
+import sys, os, subprocess, time, json
 
 app = Flask(__name__)
 
@@ -87,11 +87,18 @@ def refresh():
     print (oj['timestamp'])
     print (oj['nicedate'])
     print (oj['iss_position']['latitude'], oj['iss_position']['longitude'])
+
+    oj["ipAddress"] = "192.168.1.13"
+    oj["ipAddress"] = request.headers.get('Host').split(':')[0]
+    oj["port"] = "5089"
+    oj["port"] = request.headers.get('Host').split(':')[1]
+
     return render_template("issworld.html", oj=oj)
 
 if __name__ == "__main__":
-    # app.run(debug=True)
-    app.run(host="0.0.0.0", port=5089, debug=True)
+    if len(sys.argv) != 2:
+        sys.exit(f"usage: {sys.argv[0]}  [port#]\n")
+    app.run(host="0.0.0.0", port=f"{sys.argv[1]}", debug=True)
 
 # jsonify() vs json.dumps():  both take dict as argument
 #   dumps() returns a JSON object, jsonify() returns a response

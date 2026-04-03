@@ -5,7 +5,7 @@
 <head>
     <meta name="viewport" content="initial-scale=1, width=device-width">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <title>ISSWORLD</title>
+    <title>5089 ISSWORLD</title>
     <style>
         th { text-align: left;
         }
@@ -27,15 +27,22 @@
         minlat : -65,
         maxlon : 210,
         minlon : -180,
-    }
+  }
 
     const lats = [-60,-45,-30,-15,  0, 15, 30, 45, 60, 75,90];
     const offs = [638,552,522,480,440,400,358,308,242.135, 0];
 
     $(document).ready(function() {
 
+        var ipAddress = "{{ oj["ipAddress"] }}";
+        var port = "{{ oj["port"] }}";
+        console.log("IP Address: " + ipAddress);
+        console.log("Port Number: " + port);
+
+    
     $("#getjson").click(function(){    //  1/28/2023  PORTed to mc21a
-        $.getJSON("http://127.0.0.1:5000/issdata", function(x) {  // localhost for dev
+        $.getJSON("http://"+ipAddress+":"+port+"//issdata", function(x) {  // 9/3/2023
+        //$.getJSON("http://127.0.0.1:5000/issdata", function(x) {  // localhost for dev
         // $.getJSON("http://192.168.1.10:5000/issdata", function(x) { // this change 
             // was made on mc21a so I could reach it from the mac, 
             // but the code on mcs21a, the IP should be (essentially) `hostname -I`
@@ -99,6 +106,7 @@
         a = lon2x(dd['iss_position']['longitude'])
         b = lat2y(dd['iss_position']['latitude'])
         ctx.fillRect(a, b, 3, 3);  // ctx.fillText(Math.round(b), a+45, b);
+        ctx.fillRect(a, b, 7, 7);  // ctx.fillText(Math.round(b), a+45, b);
         $("#timestamp").html(dd['timestamp'])
         $("#nicedate").html(dd['nicedate'])
         $("#latitude").html(dd['iss_position']['latitude'])
